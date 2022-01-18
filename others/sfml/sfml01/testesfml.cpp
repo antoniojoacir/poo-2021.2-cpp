@@ -2,14 +2,11 @@
 #include <SFML/Graphics.hpp>
 
 void setSize(sf::Sprite& sprite, int width, int height) {
-    
     auto dim = sprite.getLocalBounds();
     sprite.setScale((float) width / dim.width, (float) height / dim.height);
-
 }
 
 struct Entity {
-    
     int x { 0 };
     int y { 0 };
     int step { 0 };
@@ -48,20 +45,14 @@ struct Board {
         this->rect.setFillColor(sf::Color::Transparent);
         this->rect.setOutlineColor(sf::Color::Black);
         this->rect.setOutlineThickness(1.5);
-
     }
 
     void draw(sf::RenderWindow& window) {
-        
         window.draw(this->sprite);
-        
         for (int i = 0; i < colunas; i++) {
-            
             for (int j = 0; j < linhas; j++) {
-                
                 rect.setPosition(i * step, j * step);
-                window.draw(rect);
-            
+                window.draw(rect);       
             }
         }
     }
@@ -79,27 +70,19 @@ void moveEntity(sf::Keyboard::Key key, Entity& entity, std::vector<sf::Keyboard:
     } else if (key == move_keys[3]) {
         entity.y++;
     }
-
 }
 
 sf::Texture loadTexture(std::string path) {
-    
     sf::Texture texture;
-    
     if (! texture.loadFromFile(path)) {
-        
         std::cout << "Error loading texture" << std::endl;
         exit(1);
     }
-    
     return texture;
 }
 
 
 int main() {
-    
-    
-    
     sf::Texture inuyasha_tex { loadTexture("pokebola.png")};
     sf::Texture SnT_tex { loadTexture("pikachu.png")};
     sf::Texture fundo_tex { loadTexture("planice.jpg")};
