@@ -1,112 +1,93 @@
 #include <iostream>
-#include <vector>
-#include <map>
-#include <memory>
 
 using namespace std;
 
-struct NOTE {
+class Note {
     string tittle;
     string content;
-
-    NOTE(string tittle, string content) : tittle(tittle), content(content)
+public:
+    Note(string tittle, string content) : tittle(tittle), content(content)
     {
     }
 
-    friend ostream& operator<<(ostream&, const NOTE&);
+    string getTittle() const { return this->tittle; }
+    string getContent() const { return this->content; }
+
+    friend ostream& operator<<(ostream&, const Note&);
 };
-ostream& operator<<(ostream& output, const NOTE& note) {
-    output << "[" << note.tittle << ": " << note.content << "]\n";
-    return output;
+ostream& operator<<(ostream& out, const Note& note) {
+    out << "[ " << note.tittle << ": (" << note.content << ") ]\n";
+    return out;    
 }
 
-class USER {
-    string userName;
-    string id;
-    std::vector<std::shared_ptr<NOTE>> notes;
+#include <vector>
+#include <memory>
+
+template <typename T>
+using vecptr = vector<shared_ptr<T>>;
+
+class User {
+    string username;
+    string password;
+    vecptr<Note> notes;
 public:
-    USER(string user, string password) : userName(user), id(password)
+    User(string username, string password) : username(username), password(password)
     {
     }
 
-    string getUserName() const {
-        return userName;
-    }
-
-    string getId() const {
-        return id;
-    }
+    string getUsername() const { return this->username; }
+    vecptr<Note> getNotes() const { return this->notes; }
 
     void addNote(string tittle, string content) {
-        notes.push_back(std::make_shared<NOTE>(tittle, content));
+        this->notes.push_back(make_shared<Note>(tittle, content));
     }
 
     bool rmNote(int index) {
-        if (notes.empty()) return false;
-
-        if (index < 0 || index >= (int) notes.size()) return false;
-
-        notes.erase(notes.begin() + index); return true;
-    }
-
-    friend ostream& operator<<(ostream&, const USER&);
-};
-ostream& operator<<(ostream& output, const USER& user) {
-    output << "- " << user.userName << "\n";
-    for (auto note : user.notes) {
-        output << *note;
-    }
-    return output;
-}
-
-class LOGINMANAGER {
-    USER * currentUser { nullptr };
-    map<string, std::shared_ptr<USER>> users;
-public:
-    LOGINMANAGER(map<string, std::shared_ptr<USER>> users) : users(users)
-    {
-    }
-
-    USER * getCurrentUser() { return currentUser; }
-
-    USER * getUser(string name) { 
-        auto it = users.find(name);
-        if (it == users.end()) return nullptr;
-        return it->second.get();
-    }
-
-    bool login(string username, string password) {
-        auto it = users.find(username);
-        if (it == users.end()) return false;
-        if (it->second->getId() != password) {
-            cout << "ERROR: Wrong password\n";
+        if (notes.empty()) {
+            cout << "Sem notas para remover\n";
             return false;
         }
+        if (index < 0 || index >= (int) notes.size()) {
+            cout << "Index invalido\n";
+            return false;
+        }
+        notes.erase(notes.begin() + index);
+        cout << "Nota removida com sucesso\n";
         return true;
     }
 
-    void logout() {
-        if (currentUser == nullptr) {
-            cout << "ERROR: No current user\n";
-            return;
-        }
-        currentUser = nullptr;
-    }
+    friend ostream& operator<<(ostream&, const User&);
 };
+ostream& operator<<(ostream& out, const User& user) {
+    out << user.username << "\n";
+    for (auto& note : user.notes) {
+        out << *note;
+    }
+    return out;
+}
 
-class SYSTEM {
-    LOGINMANAGER loginManager;
-    map<string, std::shared_ptr<USER>> users;
+#include <map>
+template <typename A> using mapptr = map<string, shared_ptr<A>>;
+
+class Login {
+    mapptr<User> users;
+    User * currentUser;
 public:
-    SYSTEM()
+    Login(mapptr<User> users) : users(users)
     {
     }
+
+    
+};
+
+class Sys {
+    mapptr<User> users;
+    Login mainLogin;
+public:
+
 };
 
 
 int main() {
-    USER userOne("joa", "paocomgoiaba");
-    userOne.addNote("requeijão", "eu não gosto de requeijão");
-
-    cout << userOne;
+    
 }
