@@ -203,9 +203,13 @@ public:
 ostream& operator<<(ostream& out, const Bank& bank) {
     out << "Clients: " << endl;
     for(auto client : bank.clients) {
-        out << client.first << endl;
+        out << client.first << ":";
+        for(auto account : client.second->getAccounts()) {
+            out << account->getId() << " ";
+        }
+        out << endl;
     }
-    out << "Accounts: " << endl;
+    out << "\nAccounts: " << endl;
     for(auto account : bank.accounts) {
         out << *account.second;
     }
